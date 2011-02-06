@@ -1,5 +1,5 @@
 # Smooch
-KISSmetrics is a great tool and the Javascript API have some niceties that the Ruby API doesn't have, but sometimes it's nice to make decisions in the Rails controller or views. Smooch makes this possible while keeping most of the Javascript features.
+KISSmetrics is a great tool and the Javascript API has some niceties that the Ruby API doesn't have, but sometimes it's nice to make decisions in the Rails controller or views. Smooch makes this possible while keeping most of the Javascript features.
 
 Smooch allows you to:
   
