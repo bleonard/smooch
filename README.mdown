@@ -1,0 +1,77 @@
+# Smooch
+KISSmetrics is a great tool and the Javascript API have some niceties that the Ruby API doesn't have, but sometimes it's nice to make decisions in the Rails controller or views. Smooch makes this possible while keeping most of the Javascript features.
+
+Smooch allows you to:
+  
+* Define a user's unique identifier and uses the API to associate it later if not logged in yet
+
+* Define A/B tests and makes the decision in your Ruby code
+
+* Record events in your Ruby code
+
+* Use the same code in your views for development a production but not KISSmetrics about development actions or for other reasons
+
+* Still use the Javascript API as before if you like
+
+## Example Usage
+
+### application_controller.rb
+	class ApplicationController < ActionController::Base
+		kiss :current_user
+	end
+
+### users_controller.rb
+	def new
+		km.record("Signup page viewed")
+		if km.ab("Show faces in sidebar", ["yes", "no"]) == "yes"
+			@profiles = User.good_looking.limited(5)
+		end
+		@user = User.new
+	end
+	
+	def create
+		@user = User.new(params[:user])
+		if @user.save
+			km.record("Signup converted")
+			redirect_to @user
+		else
+			render :new
+		end
+	end
+
+### new.erb
+	<%= render 'faces', :users => @profiles if @profiles %>
+	...
+	<%= submit_tag km.ab("Signup Button Text", ["Go!", "Submit"])
+
+### application.html.erb
+	<html>
+		<head>
+			...
+			<%= km.script %>
+		</head>
+
+### config/kissmetrics.yml
+    production:
+      apikey: kiss_metrics_api_key_here
+
+## Reporting
+
+`km.script` will report the data to KISSmetrics if there is a line in kissmetrics.yml for your environment. In the above example it would have reported the choices about showing faces in the sidebar and the button text as well as the conversion points noted. This would have all been correlated to the user's new id if they were successful in the signup.
+
+You can also pass a boolean variable into the call as follows: `km.script(tracking_metrics?)`
+
+We use this to opt-out site admins from our metrics for more relevant results.
+
+## Techniques
+
+Smooch replicates some of the A/B behaviors of the KISSmetrics library by using (it's own) cookies to remember decisions and be consistent.
+
+For any given set of decisions made or events recorded, they are simply given to the Javascript API the next time the application layout is rendered. This will use either flash or in-memory depending on when the calls were made.
+
+Several tactics used from other reporting libraries such as [vanity](https://github.com/assaf/vanity).
+
+
+
+
+Copyright (c) 2011 Brian Leonard, released under the MIT license
