@@ -1,0 +1,5 @@
+production:
+    apikey: production_key_here
+
+test:
+    apikey: test_key_here

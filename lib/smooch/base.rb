@@ -126,7 +126,12 @@ module Smooch
        end
        out.html_safe!
      end
-     def script(production=true)
+     
+     def api_key
+       Smooch::API_KEY.blank? ? nil : Smooch::API_KEY
+     end
+     
+     def script(send=true)
        clear_flash
 
        out = <<-JAVASCRIPT
@@ -143,9 +148,9 @@ module Smooch
              }, 1);
            }
        JAVASCRIPT
-       if production
+       if send and api_key.present?
          out += "_kms('//i.kissmetrics.com/i.js');\n"
-         out += "_kms('//doug1izaerwt3.cloudfront.net/myid.1.js');\n"
+         out += "_kms('//doug1izaerwt3.cloudfront.net/#{api_key}.1.js');\n"
        end
 
        identity = get_kiss_identity

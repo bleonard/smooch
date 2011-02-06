@@ -41,4 +41,11 @@ describe TestSmooch do
       TestSmooch.new.ab("Signup Button Color").should == @val
     end
   end
+  
+  describe "api key" do
+    it "should return the api key from the config file" do
+      km = TestSmooch.new
+      km.api_key.should == "test_key_here"
+    end
+  end
 end
