@@ -32,6 +32,7 @@ Smooch allows you to:
 	def create
 		@user = User.new(params[:user])
 		if @user.save
+			km.set("User zipcode", @user.zipcode)
 			km.record("Signup converted")
 			redirect_to @user
 		else
@@ -42,6 +43,7 @@ Smooch allows you to:
 ### new.erb
 	<%= render 'faces', :users => @profiles if @profiles %>
 	...
+	<%= f.text_field :zipcode
 	<%= submit_tag km.ab("Signup Button Text", ["Go!", "Submit"]) %>
 
 ### application.html.erb
@@ -57,7 +59,7 @@ Smooch allows you to:
 
 ## Reporting
 
-`km.script` will report the data to KISSmetrics if there is a line in kissmetrics.yml for your environment. In the above example it would have reported the choices about showing faces in the sidebar and the button text as well as the conversion points noted. This would have all been correlated to the user's new id if they were successful in the signup.
+`km.script` will report the data to KISSmetrics if there is a line in kissmetrics.yml for your environment. In the above example it would have reported the choices about showing faces in the sidebar and the button text as well as the conversion points noted. This would have all been correlated to the user's new id and have set the zipcode if they were successful in the signup.
 
 You can also pass a boolean variable into the call as follows: `km.script(tracking_metrics?)`
 
@@ -67,7 +69,7 @@ We use this to opt-out site admins from our metrics for more relevant results.
 
 Smooch replicates some of the A/B behaviors of the KISSmetrics library by using (it's own) cookies to remember decisions and be consistent.
 
-For any given set of decisions made or events recorded, they are simply given to the Javascript API the next time the application layout is rendered. This will use either flash or in-memory depending on when the calls were made.
+For any given set of decisions made or events recorded/set, they are simply given to the Javascript API the next time the application layout is rendered. This will use either flash or in-memory depending on when the calls were made.
 
 Several tactics used from other reporting libraries such as [vanity](https://github.com/assaf/vanity).
 
