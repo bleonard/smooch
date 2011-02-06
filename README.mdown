@@ -42,7 +42,7 @@ Smooch allows you to:
 ### new.erb
 	<%= render 'faces', :users => @profiles if @profiles %>
 	...
-	<%= submit_tag km.ab("Signup Button Text", ["Go!", "Submit"])
+	<%= submit_tag km.ab("Signup Button Text", ["Go!", "Submit"]) %>
 
 ### application.html.erb
 	<html>
