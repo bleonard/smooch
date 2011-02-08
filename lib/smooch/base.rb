@@ -117,14 +117,16 @@ module Smooch
           end
           out += "]);\n"
        end
-       out.html_safe!
+       out = out.html_safe if out.respond_to?(:html_safe) 
+       out
      end
      def push_set(hash)
        out = ""
        hash.each do |key, value|
           out += "_kmq.push(['set', {'#{js(key)}' : '#{js(value)}'}]);\n"
        end
-       out.html_safe!
+       out = out.html_safe if out.respond_to?(:html_safe) 
+       out
      end
      
      def api_key
@@ -160,8 +162,9 @@ module Smooch
        out += push_set(@sets)
        out += push_set(@choices)
 
-       out += "</script>\n"      
-       out.html_safe!
+       out += "</script>\n"
+       out = out.html_safe if out.respond_to?(:html_safe)  
+       out
      end
 
 
