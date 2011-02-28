@@ -9,6 +9,10 @@ class TestSmooch < Smooch::Base
   def set_cookie(key, name)
     @@cookies[key] = name
   end
+  def get_kiss_identity
+    "123456789"
+  end
+  
 end
 
 describe TestSmooch do
@@ -46,6 +50,25 @@ describe TestSmooch do
     it "should return the api key from the config file" do
       km = TestSmooch.new
       km.api_key.should == "test_key_here"
+    end
+  end
+  
+  describe "#script" do
+    before(:each) do
+      @km = TestSmooch.new
+      @km.view = ActionView::Base.new
+    end
+    it "should include the record" do
+      @km.record("something")
+      @km.script.should include("_kmq.push(['record', 'something']);")
+    end
+    it "should include the key" do
+      @km.script.should include("_kmq.push(['identify', '123456789']);")
+    end
+    it "should include the recorded properties" do
+      @km.record("something", :key => "val")
+      @km.script.should include("_kmq.push(['record', 'something', {\"key\":\"val\"}]);")
+      
     end
   end
 end

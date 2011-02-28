@@ -111,11 +111,11 @@ module Smooch
      def push_record(hash)
        out = ""
        hash.each do |key, value|
-          out += "_kmq.push(['record', '#{js(key)}'"
-          unless value.empty?
-            out += ", #{value.as_json}"
-          end
-          out += "]);\n"
+         out += "_kmq.push(['record', '#{js(key)}'"
+         unless value.empty?
+           out += ", #{value.to_json}"
+         end
+         out += "]);\n"
        end
        out = out.html_safe if out.respond_to?(:html_safe) 
        out
