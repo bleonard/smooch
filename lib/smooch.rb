@@ -1,5 +1,5 @@
 module Smooch
-  #API_KEY = ''
+  API_KEY = ''
 end
 
 begin
