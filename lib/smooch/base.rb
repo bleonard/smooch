@@ -5,28 +5,43 @@ module Smooch
      def initialize(controller=nil)
        self.controller = controller
        self.view = view
-       @choices = {}
-       @records = {}
-       @sets = {}
-
        init_flash
      end
 
+     FLASH_KEY = :smooch
      def record(property, hash={})
-       flash[:kiss_metrics] = property.to_s
        @records[property.to_s] = hash
+       write_flash
      end
      def init_flash
-       property = flash[:kiss_metrics]
-       return unless property
-       record(property) 
+       hash = flash[FLASH_KEY] || {}
+       @records = hash[:r] || {}
+       @sets = hash[:s] || {}
+       @choices = hash[:c] || {}
+     end
+     def write_flash
+       hash = nil
+       unless @records.empty?
+         hash ||= {}
+         hash[:r] = @records
+       end
+       unless @sets.empty?
+          hash ||= {}
+          hash[:s] = @sets
+        end
+        unless @choices.empty?
+           hash ||= {}
+           hash[:c] = @choices
+         end
+       flash[FLASH_KEY] = hash
      end
      def clear_flash
-       flash[:kiss_metrics] = nil
+       flash[FLASH_KEY] = nil
      end
 
      def set(property, value)
        @sets[property.to_s] = value
+       write_flash
      end
 
      def ab(name, choices=nil)
@@ -76,6 +91,7 @@ module Smooch
        set_ab_database(name, val)
        set_cookie(key(name), val)
        @choices[name] = val
+       write_flash
        val
      end
 
