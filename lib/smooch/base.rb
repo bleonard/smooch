@@ -63,6 +63,10 @@ module Smooch
        val = get_ab_cookie(name) unless val
        val = nil if val and choices and not choices.include?(val)
 
+       if choices and Smooch.ab_static?
+         val = choices.first unless val
+       end
+       
        # pick a random one
        val = get_ab_random_choice(choices) unless val
 
@@ -83,6 +87,9 @@ module Smooch
      end
      def get_ab_cached(name)
        @choices[name]
+     end
+     def get_ab_cache_key
+       [@records, @sets, @choices].to_param
      end
      def get_ab_cookie(name)
        get_cookie(key(name))
@@ -112,7 +119,9 @@ module Smooch
        controller.kiss_identity
      end
      def set_cookie(key, value)
-       cookies[key] = { :value => value, :expires => 2.months.from_now }
+       unless cookies[key] == value
+         cookies[key] = { :value => value, :expires => 2.months.from_now }
+       end
      end
      def get_cookie(key)
        cookies[key]
@@ -129,7 +138,7 @@ module Smooch
        hash.each do |key, value|
          out += "_kmq.push(['record', '#{js(key)}'"
          unless value.empty?
-           out += ", #{value.to_json}"
+           out += ", #{value.to_json.gsub(/<\/?script>/i, "")}"
          end
          out += "]);\n"
        end

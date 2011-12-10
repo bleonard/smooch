@@ -1,5 +1,13 @@
 module Smooch
   API_KEY = ''
+  
+  def self.ab_static?
+    !!@ab_static
+  end
+  def self.ab_static=val
+    @ab_static=val
+  end
+  
 end
 
 begin
